@@ -9,6 +9,8 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 const {ccclass, property} = cc._decorator;
+const GRAVITY = 1500;
+
 
 @ccclass
 export default class NewClass extends cc.Component {
@@ -16,6 +18,10 @@ export default class NewClass extends cc.Component {
     @property(cc.Canvas)
     canvas: cc.Canvas = null;
 
+    startVelocity: cc.Vec2;
+    startPos: cc.Vec2;
+    boundTime: number;
+    isBound: boolean;
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
@@ -25,14 +31,26 @@ export default class NewClass extends cc.Component {
     }
 
     start () {
-
+        this.isBound = false;
+        this.startPos = this.node.position;
     }
 
     update (dt) {
-
+        if (this.isBound) {
+            let x = this.startVelocity.x * this.boundTime;
+            let y = this.startVelocity.y * this.boundTime - 0.5 * GRAVITY * this.boundTime * this.boundTime;
+    
+            this.node.position = this.startPos.add(new cc.Vec2(x, y));
+            this.boundTime += dt;
+            if (this.node.position.y + 1 <= this.startPos.y) {
+                this.node.position.y = this.startPos.y;
+                this.isBound = false;
+            }
+        }
     }
 
     onTouchStart (touch: cc.Event.EventTouch) {
+        
     }
 
     onTouchMove (touch: cc.Event.EventTouch) {
@@ -51,8 +69,15 @@ export default class NewClass extends cc.Component {
     }
 
     onTouchEnd (touch: cc.Event.EventTouch) {
+        //clear drawing
         let drawing: cc.Graphics = this.canvas.node.getChildByName("Drawing").getComponent("cc.Graphics");
         drawing.clear();
+
+        //bound
+        this.startVelocity = new cc.Vec2(-1 * (touch.getLocation().x - touch.getStartLocation().x), -2 * (touch.getLocation().y - touch.getStartLocation().y));
+        this.startPos.x = this.node.position.x;
+        this.boundTime = 0;
+        this.isBound = true;
     }
 
 }
