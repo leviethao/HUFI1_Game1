@@ -14,6 +14,8 @@ const {ccclass, property} = cc._decorator;
 export default class NewClass extends cc.Component {
     @property(cc.Node) Item1: cc.Node=null;
     @property(cc.Node) Item2: cc.Node=null;
+    neo1: cc.Vec2;
+    neo2: cc.Vec2;
     public MoveWidth(x:number)
     {
         var move =cc.moveBy(0,x,0);
@@ -24,30 +26,29 @@ export default class NewClass extends cc.Component {
     }
 
     start () {
-        
+        this.neo1=this.Item1.position;
+        this.neo2=this.Item2.position;
     }
 
     update (dt) 
     {
-        if(this.Item1.position.x>-639/2)
+        if(this.Item1.position.x>-this.neo1.x)
         {
-            this.Item1.runAction(this.MoveWidth(-5));
+            this.Item1.position = this.Item1.position.add(new cc.Vec2(-5, 0));
+            this.Item2.position = this.Item2.position.add(new cc.Vec2(-5, 0));            
         }
-        if(this.Item2.position.x>-639/2)
+        if(this.Item1.position.x<=-this.neo1.x)
         {
+            this.Item1.position=this.Item1.position.add(new cc.Vec2(this.Item2.width*2,0));
+            cc.log("Test width: "+this.Item2.width);
             
-            this.Item2.runAction(this.MoveWidth(-5));
-            cc.log("TEst item2:"+this.Item2.position.x);
+        cc.log("Test item 1:"+this.Item1.x);
         }
-        if(this.Item1.position.x<=-639/2)
+        if(this.Item2.position.x<=-this.neo1.x)
         {
-            this.Item1.runAction(this.MoveWidth(600));
-            cc.log("TEst item1:"+this.Item1.position.x);
-        }
-        if(this.Item2.position.x<=-639/2)
-        {
-            this.Item2.runAction(this.MoveWidth(660));
-            cc.log("TEst item2:"+this.Item2.position.x);
+            this.Item2.position=this.Item2.position.add(new cc.Vec2(this.Item1.width*2,0));
+            
+        cc.log("Test item 2:"+this.Item2.x);
         }
     }
 }

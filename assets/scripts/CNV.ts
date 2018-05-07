@@ -9,34 +9,23 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 const {ccclass, property} = cc._decorator;
-import CNV from './CNV';
+
 @ccclass
 export default class NewClass extends cc.Component {
 
-    @property(cc.Prefab) prefabcnv: cc.Prefab =null;
-    // LIFE-CYCLE CALLBACKS:
-    newCNV()
-    {
-        
-        var obj =  cc.instantiate(this.prefabcnv);
-        this.node.addChild(obj);
-        
-        var cnv = obj.getComponent(CNV);
-        
-    }
-    onLoad () 
-    {
-        this.newCNV();
-    }
 
+    // onLoad () {}
+    moveObj()
+    {
+        this.node.position=this.node.position.add(new cc.Vec2(-5,0));
+    }
     start () 
     {
-        
-        
+
     }
 
-    update (dt) 
-    {
-        
-    }
+     update (dt) 
+     {
+
+     }
 }
