@@ -12,20 +12,27 @@ const {ccclass, property} = cc._decorator;
 
 @ccclass
 export default class NewClass extends cc.Component {
+    @property(cc.Node) Item1: cc.Node=null;
+    @property(cc.Node) Item2: cc.Node=null;
 
-
-    // onLoad () {}
+    onLoad () 
+    {
+        
+        this.Item1.position=this.Item1.position.add(new cc.Vec2(360,-50));
+        this.Item2.position=this.Item2.position.add(new cc.Vec2(360,-300));
+        cc.log("Test")
+    }
     moveObj()
     {
-        this.node.position=this.node.position.add(new cc.Vec2(-5,0));
+        this.Item1.position=this.Item1.position.add(new cc.Vec2(-5,0));
+        this.Item2.position=this.Item2.position.add(new cc.Vec2(-5,0));
     }
     start () 
     {
-
     }
 
      update (dt) 
      {
-
+        this.moveObj();
      }
 }

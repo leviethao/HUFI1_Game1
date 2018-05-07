@@ -40,15 +40,10 @@ export default class NewClass extends cc.Component {
         if(this.Item1.position.x<=-this.neo1.x)
         {
             this.Item1.position=this.Item1.position.add(new cc.Vec2(this.Item2.width*2,0));
-            cc.log("Test width: "+this.Item2.width);
-            
-        cc.log("Test item 1:"+this.Item1.x);
         }
         if(this.Item2.position.x<=-this.neo1.x)
         {
             this.Item2.position=this.Item2.position.add(new cc.Vec2(this.Item1.width*2,0));
-            
-        cc.log("Test item 2:"+this.Item2.x);
         }
     }
 }
