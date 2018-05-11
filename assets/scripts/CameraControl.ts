@@ -9,40 +9,38 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 const {ccclass, property} = cc._decorator;
-import CNV from './CNV';
+
 @ccclass
 export default class NewClass extends cc.Component {
 
-    @property(cc.Prefab) prefabcnv: cc.Prefab =null;
+    @property(cc.Node)
+    target: cc.Node = null;
     
-    // LIFE-CYCLE CALLBACKS:
-    delay: number;
-    newCNV()
-    {
-        
-        var obj =  cc.instantiate(this.prefabcnv);
-        this.node.addChild(obj);
-        var cnv = obj.getComponent(CNV);
-        
-    }
-    onLoad () 
-    {
-    
+    camera: cc.Camera = null;
+
+    onLoad () {
+        this.camera = this.node.getComponent(cc.Camera);
     }
 
-    start () 
-    {
-        this.delay=0;
-        
+    start () {
+
     }
 
-    update (dt) 
-    {
-        this.delay=this.delay+dt;
-        if(this.delay>3)
-        {
-            this.delay=0;
-            this.newCNV();
-        }
+    // update (dt) {}
+
+    onEnable () {
+        cc.director.getPhysicsManager().attachDebugDrawToCamera(this.camera);
+    }
+
+    onDisable () {
+        cc.director.getPhysicsManager().detachDebugDrawFromCamera(this.camera);
+    }
+
+    lateUpdate () {
+        let targetPos = this.target.convertToWorldSpaceAR(cc.Vec2.ZERO);
+        this.node.position = this.node.parent.convertToNodeSpaceAR(targetPos);
+
+        // prevent
+        this.node.y -= this.target.y;
     }
 }
