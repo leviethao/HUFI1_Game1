@@ -18,10 +18,14 @@ export default class NewClass extends cc.Component {
     @property(cc.Canvas)
     canvas: cc.Canvas = null;
 
+    @property
+    runSpeed: number = 0;
+
     startVelocity: cc.Vec2;
     startPos: cc.Vec2;
     boundTime: number;
     isBound: boolean;
+    
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
@@ -47,6 +51,9 @@ export default class NewClass extends cc.Component {
                 this.isBound = false;
             }
         }
+
+        //player run
+        this.node.x += this.runSpeed * dt;
     }
 
     onTouchStart (touch: cc.Event.EventTouch) {

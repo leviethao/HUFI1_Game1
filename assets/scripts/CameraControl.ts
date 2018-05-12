@@ -23,7 +23,7 @@ export default class NewClass extends cc.Component {
     }
 
     start () {
-
+        //this.camera.zoomRatio = 0.5;
     }
 
     // update (dt) {}
