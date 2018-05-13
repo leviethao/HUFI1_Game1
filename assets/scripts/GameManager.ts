@@ -26,6 +26,15 @@ export default class NewClass extends cc.Component {
 
     @property(cc.Node)
     camera: cc.Node = null;
+
+    @property({url: cc.AudioClip})
+    scoreAudio: cc.AudioClip = null;
+
+    @property({url: cc.AudioClip})
+    backgroundAudio: cc.AudioClip = null;
+
+    @property({url: cc.AudioClip})
+    gameOverAudio: cc.AudioClip = null;
     
     // LIFE-CYCLE CALLBACKS:
  
@@ -34,6 +43,7 @@ export default class NewClass extends cc.Component {
     isGamePause: boolean = false;
     isGameOver: boolean = false;
     isGameStart: boolean = false;
+    backgroundAudioID: number;
 
     createCNV(parentNode: cc.Node) : cc.Node
     {
@@ -62,6 +72,8 @@ export default class NewClass extends cc.Component {
             let cnv = cc.instantiate(this.prefabcnv);
             this.cnvPool.put(cnv);
         }
+
+        this.backgroundAudioID = cc.audioEngine.play(this.backgroundAudio, true, 0.5);
     }
 
     start () 
@@ -82,11 +94,18 @@ export default class NewClass extends cc.Component {
     gainScore () {
         this.scoreVal++;
         this.scoreLabel.string = "Score: " + this.scoreVal.toString();
+        cc.audioEngine.play(this.scoreAudio, false, 1);
     }
 
     gameOver () {
         this.isGameOver = true;
         
+        //stop background audio
+        cc.audioEngine.stop(this.backgroundAudioID);
+
+        //play gameover audio
+        cc.audioEngine.play(this.gameOverAudio, false, 1);
+
         //save score
         cc.sys.localStorage.setItem('score', this.scoreVal);
 

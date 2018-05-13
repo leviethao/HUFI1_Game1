@@ -556,7 +556,10 @@
     "canvas": {
       "__id__": 9
     },
-    "runSpeed": 100
+    "runSpeed": 100,
+    "jumpAudio": {
+      "__uuid__": "ecbcc382-da67-4b60-90fb-15dfd00ebad8"
+    }
   },
   {
     "__type__": "cc.Animation",
@@ -820,6 +823,15 @@
     },
     "camera": {
       "__id__": 11
+    },
+    "scoreAudio": {
+      "__uuid__": "c42964ba-dd0b-4283-8257-d3c19317c487"
+    },
+    "backgroundAudio": {
+      "__uuid__": "3a643313-9be2-41f3-a1da-e0a97263b599"
+    },
+    "gameOverAudio": {
+      "__uuid__": "7ff85fcd-6497-48b3-9955-2375420e8385"
     }
   }
 ]

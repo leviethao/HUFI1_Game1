@@ -21,6 +21,9 @@ export default class NewClass extends cc.Component {
     @property
     runSpeed: number = 0;
 
+    @property({url: cc.AudioClip})
+    jumpAudio: cc.AudioClip = null;
+
     startVelocity: cc.Vec2;
     startPos: cc.Vec2;
     boundTime: number;
@@ -112,6 +115,7 @@ export default class NewClass extends cc.Component {
         //play jump animation
         let anim = this.getComponent(cc.Animation);
         anim.play();
+        cc.audioEngine.play(this.jumpAudio, false, 1);
     }
 
     onCollisionEnter (other, self) {
