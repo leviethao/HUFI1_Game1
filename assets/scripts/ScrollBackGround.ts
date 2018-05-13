@@ -61,7 +61,7 @@ export default class NewClass extends cc.Component {
         //get camera position, get distance that camera moved
         
         let movedDistance = this.camera.node.x - this.cameraPrevtPos.x;
-        console.log("DISTANCE: " + movedDistance);
+        //console.log("DISTANCE: " + movedDistance);
 
 
         if (movedDistance >= this.canvas.node.width) {
@@ -75,42 +75,7 @@ export default class NewClass extends cc.Component {
             this.cameraPrevtPos.x += this.canvas.node.width;
         }
 
-        // for (let i = 0; i < this.backgroundItems.length; i++) {
-        //     //move items
-        //     this.backgroundItems[i].x -= this.speed * dt;
-        // }
 
-        // let headItemPos = this.canvas.node.convertToNodeSpaceAR(this.backgroundItems[0].parent.convertToWorldSpaceAR(this.backgroundItems[0].position));
-        // if (headItemPos.x + this.backgroundItems[0].width / 2 - movedDistance < - this.canvas.node.width / 2) {
-        //     this.backgroundItems[0].x = this.backgroundItems[this.backgroundItems.length - 1].x + this.backgroundItems[this.backgroundItems.length - 1].width;
-
-        //     //swap items
-        //     for (let i = 1; i < this.backgroundItems.length; i++) {
-        //         [this.backgroundItems[i], this.backgroundItems[i - 1]] = [this.backgroundItems[i - 1], this.backgroundItems[i]];
-        //     }
-
-        //     if (movedDistance > this.canvas.node.width) {
-        //         this.cameraPrevtPos.x += this.canvas.node.width;
-        //     }
-
-
-            
-        }
-
-
-        // if(this.Item1.position.x>-this.neo1.x)
-        // {
-        //     this.Item1.position = this.Item1.position.add(new cc.Vec2(-5, 0));
-        //     this.Item2.position = this.Item2.position.add(new cc.Vec2(-5, 0));            
-        // }
-        // if(this.Item1.position.x<=-this.neo1.x)
-        // {
-        //     this.Item1.position=this.Item1.position.add(new cc.Vec2(this.Item2.width*2,0));
-        // }
-        // if(this.Item2.position.x<=-this.neo1.x)
-        // {
-        //     this.Item2.position=this.Item2.position.add(new cc.Vec2(this.Item1.width*2,0));
-        // }
     }
 
 }

@@ -32,7 +32,12 @@ export default class NewClass extends cc.Component {
         this.canvas.node.on(cc.Node.EventType.TOUCH_START, this.onTouchStart.bind(this));
         this.canvas.node.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove.bind(this));
         this.canvas.node.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd.bind(this));
+
+        cc.director.getCollisionManager().enabled = true;
+        //cc.director.getCollisionManager().enabledDebugDraw = true;
     }
+
+  
 
     start () {
         this.isBound = false;
@@ -40,6 +45,12 @@ export default class NewClass extends cc.Component {
     }
 
     update (dt) {
+        //check if game over
+        if (this.canvas.getComponent("GameManager").isGameOver) {
+            this.gameOver();
+            return;
+        }
+
         if (this.isBound) {
             let x = this.startVelocity.x * this.boundTime;
             let y = this.startVelocity.y * this.boundTime - 0.5 * GRAVITY * this.boundTime * this.boundTime;
@@ -61,6 +72,12 @@ export default class NewClass extends cc.Component {
     }
 
     onTouchMove (touch: cc.Event.EventTouch) {
+        //Check game over and game pause
+        let game = this.canvas.getComponent("GameManager");
+        if (game.isGameOver || game.isGamePause) {
+            return;
+        }
+
         let drawing: cc.Graphics = this.canvas.node.getChildByName("Drawing").getComponent("cc.Graphics");
         let startLoc = this.canvas.node.convertToWorldSpace(touch.getStartLocation());
         startLoc = drawing.node.convertToNodeSpaceAR(startLoc);
@@ -76,6 +93,12 @@ export default class NewClass extends cc.Component {
     }
 
     onTouchEnd (touch: cc.Event.EventTouch) {
+        //check game over and game pause
+        let game = this.canvas.getComponent("GameManager");
+        if (game.isGameOver || game.isGamePause) {
+            return;
+        }
+        
         //clear drawing
         let drawing: cc.Graphics = this.canvas.node.getChildByName("Drawing").getComponent("cc.Graphics");
         drawing.clear();
@@ -85,6 +108,26 @@ export default class NewClass extends cc.Component {
         this.startPos.x = this.node.position.x;
         this.boundTime = 0;
         this.isBound = true;
+
+        //play jump animation
+        let anim = this.getComponent(cc.Animation);
+        anim.play();
     }
 
+    onCollisionEnter (other, self) {
+        switch (other.tag) {
+            case 1: { //score
+                this.canvas.getComponent("GameManager").gainScore();            
+            } break;
+
+            case 2: { //cnv
+                this.canvas.getComponent("GameManager").gameOver();
+            } break;
+        }
+        console.log("TAG: " + other.tag);
+    }
+
+    gameOver () {
+
+    }
 }

@@ -10,39 +10,88 @@
 
 const {ccclass, property} = cc._decorator;
 import CNV from './CNV';
+import GameOver from "./GameOver";
+
+
+const DEFAULT_POOL_SIZE = 10;
 @ccclass
 export default class NewClass extends cc.Component {
 
     @property(cc.Prefab) prefabcnv: cc.Prefab =null;
+    @property(cc.Node)
+    player: cc.Node = null;
+
+    @property(cc.Label)
+    scoreLabel: cc.Label = null;
+
+    @property(cc.Node)
+    camera: cc.Node = null;
     
     // LIFE-CYCLE CALLBACKS:
-    delay: number;
-    newCNV()
+ 
+    cnvPool: cc.NodePool = null;
+    scoreVal: number = 0;
+    isGamePause: boolean = false;
+    isGameOver: boolean = false;
+    isGameStart: boolean = false;
+
+    createCNV(parentNode: cc.Node) : cc.Node
     {
-        
-        var obj =  cc.instantiate(this.prefabcnv);
-        this.node.addChild(obj);
-        var cnv = obj.getComponent(CNV);
-        
+        let cnv: cc.Node = null;
+        if (this.cnvPool.size() > 0) {
+            cnv = this.cnvPool.get();
+        } else {
+            cnv = cc.instantiate(this.prefabcnv);
+        }
+
+        cnv.parent = parentNode;
+        cnv.getComponent("CNV").player = this.player;
+        cnv.getComponent("CNV").canvas = this.node;
+        cnv.getComponent("CNV").cnvPool = this.cnvPool;
+        cnv.getComponent("CNV").camera = this.camera;
+        this.camera.getComponent(cc.Camera).addTarget(cnv);
+        cnv.getComponent("CNV").init();
+        return cnv;
     }
+
     onLoad () 
     {
-    
+        //init pool
+        this.cnvPool = new cc.NodePool("CNV");
+        for (let i = 0; i < DEFAULT_POOL_SIZE; i++) {
+            let cnv = cc.instantiate(this.prefabcnv);
+            this.cnvPool.put(cnv);
+        }
     }
 
     start () 
     {
-        this.delay=0;
-        
+        this.spawnCNV();
     }
 
     update (dt) 
     {
-        this.delay=this.delay+dt;
-        if(this.delay>3)
-        {
-            this.delay=0;
-            this.newCNV();
-        }
+       
+    }
+
+    spawnCNV () {
+        let cnv = this.createCNV(this.node);
+        cnv.x = this.player.x + this.node.width / 2 + cnv.getChildByName("cnv1").width;
+    }
+
+    gainScore () {
+        this.scoreVal++;
+        this.scoreLabel.string = "Score: " + this.scoreVal.toString();
+    }
+
+    gameOver () {
+        this.isGameOver = true;
+        
+        //save score
+        cc.sys.localStorage.setItem('score', this.scoreVal);
+
+        cc.director.loadScene("GameOver", function () {
+            let gameOverComponent = cc.director.getScene().getChildByName("Canvas").getComponent(GameOver);
+        });
     }
 }
