@@ -90,8 +90,8 @@ export default class NewClass extends cc.Component {
         //save score
         cc.sys.localStorage.setItem('score', this.scoreVal);
 
-        cc.director.loadScene("GameOver", function () {
-            let gameOverComponent = cc.director.getScene().getChildByName("Canvas").getComponent(GameOver);
-        });
+        this.node.runAction(cc.sequence(cc.fadeOut(0.2), cc.callFunc(function () {
+            cc.director.loadScene("GameOver");
+        })));
     }
 }
