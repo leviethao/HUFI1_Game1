@@ -36,6 +36,16 @@ export default class NewClass extends cc.Component {
     @property({url: cc.AudioClip})
     gameOverAudio: cc.AudioClip = null;
     
+
+    @property(cc.SpriteFrame)
+    safeSpriteFrame: cc.SpriteFrame = null;
+
+    @property(cc.SpriteFrame)
+    unsafeSpriteFrame: cc.SpriteFrame = null;
+
+    @property(cc.Prefab)
+    scoreColliderPrefab: cc.Prefab = null;
+
     // LIFE-CYCLE CALLBACKS:
  
     cnvPool: cc.NodePool = null;
@@ -44,6 +54,7 @@ export default class NewClass extends cc.Component {
     isGameOver: boolean = false;
     isGameStart: boolean = false;
     backgroundAudioID: number;
+    prevCNVPosit: cc.Vec2;
 
     createCNV(parentNode: cc.Node) : cc.Node
     {
@@ -61,6 +72,7 @@ export default class NewClass extends cc.Component {
         cnv.getComponent("CNV").camera = this.camera;
         this.camera.getComponent(cc.Camera).addTarget(cnv);
         cnv.getComponent("CNV").init();
+        cnv.getComponent(CNV).scoreColliderPrefab = this.scoreColliderPrefab;
         return cnv;
     }
 
@@ -78,17 +90,59 @@ export default class NewClass extends cc.Component {
 
     start () 
     {
-        this.spawnCNV();
+        this.prevCNVPosit = cc.Vec2.ZERO;
+        this.spawnCNV(1, true);
+        for (let i = 0; i < 3; i++) {
+            this.spawnCNV(3, undefined);
+        }
     }
 
     update (dt) 
     {
-       
     }
 
-    spawnCNV () {
-        let cnv = this.createCNV(this.node);
-        cnv.x = this.player.x + this.node.width / 2 + cnv.getChildByName("cnv1").width;
+    spawnCNV (count: number, isSafe: boolean) {
+        //random safe cnv
+        let safeRand = isSafe? 0 : Math.floor(Math.random() * count);
+        for (let i = 0; i < count; i++) {
+
+            let cnv = this.createCNV(this.node);
+            //set safe cnv
+            cnv.getComponent(cc.Sprite).spriteFrame = (i == safeRand) ? this.safeSpriteFrame : this.unsafeSpriteFrame;
+
+            let sizeRand = Math.random() - 0.3;
+            sizeRand = sizeRand < 0.3 ? 0.3 : sizeRand;
+            
+            cnv.width = 0.1 * this.node.width;
+            cnv.height = sizeRand * this.node.height;
+            if (cnv.height - this.player.y - this.player.height / 2 > this.player.height * 2 + this.node.height / 2) {
+                cnv.height = this.player.y + this.player.height / 2 + this.player.height * 2 + this.node.height / 2;
+            }
+            cnv.y = -this.node.height / 2 + cnv.height / 2;
+
+            //set position
+            let rand = Math.random() - 0.5;
+            if (rand < 0.1) {
+                rand = 0.1;
+            }
+
+            if (count == 1 && isSafe) {
+                cnv.x = this.player.x;
+                this.player.y = cnv.y + cnv.height / 2 + this.player.height / 2;
+            } else {
+                cnv.x = cnv.width + this.prevCNVPosit.x + rand * cnv.width;
+                this.prevCNVPosit = cnv.position;
+            }
+            
+           
+
+            cnv.getComponent(CNV).init();
+            if (i == safeRand) {
+                cnv.getComponent(CNV).enableScoreCollider();
+            } 
+
+
+        }
     }
 
     gainScore () {

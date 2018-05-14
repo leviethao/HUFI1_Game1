@@ -15,10 +15,12 @@ export default class NewClass extends cc.Component {
     //@property(cc.Node) Item1: cc.Node=null;
     //@property(cc.Node) Item2: cc.Node=null;
 
+
     player: cc.Node = null;
     canvas: cc.Node = null;
     cnvPool: cc.NodePool = null;
     camera: cc.Node = null;
+    scoreColliderPrefab: cc.Prefab = null;
 
     onLoad () 
     {
@@ -26,26 +28,25 @@ export default class NewClass extends cc.Component {
         // this.Item1.position=this.Item1.position.add(new cc.Vec2(360,-50));
         // this.Item2.position=this.Item2.position.add(new cc.Vec2(360,-300));
         // cc.log("Test")
-        
-     
-
     }
 
 
     init () {
 
+        //set boxcollider size
+        this.node.getComponent(cc.BoxCollider).size = this.node.getContentSize();
+        this.node.getComponent(cc.BoxCollider).size.height -= 50;
         
         //let cnvHeight = this.canvas.height - this.player.height * 3;
-        let random = Math.random();
-        if (random < 0.3) {
-            random = 0.3;
-        }
+        // let random = Math.random();
+        // if (random < 0.3) {
+        //     random = 0.3;
+        // }
 
-        if (random > 0.7) {
-            random = 0.7;
-        }
-
-        this.node.getComponent(cc.Sprite)
+        // if (random > 0.7) {
+        //     random = 0.7;
+        // }
+        
 
         //set item's height
         //this.Item2.height = Math.max(cnvHeight * random, CNV_MIN_HEIGHT);
@@ -75,20 +76,35 @@ export default class NewClass extends cc.Component {
      update (dt) 
      {
         
-        if ((this.player.x - this.player.width / 2) - (this.node.x + this.Item1.width / 2) > this.canvas.width / 2) {
+        if ((this.player.x - this.player.width / 2) - (this.node.x + this.node.width / 2) > this.canvas.width / 2) {
             //remove target of camera
             this.camera.getComponent(cc.Camera).removeTarget(this.node);
-            this.canvas.getComponent("GameManager").spawnCNV();
-
+            //this.canvas.getComponent("GameManager").spawnCNV();
             this.cnvPool.put(this.node);
         }
         
      }
 
     reuse () {
+       
     }
 
     unuse () {
+        
     }
 
+    enableScoreCollider () {
+        let scoreColliderNode = cc.instantiate(this.scoreColliderPrefab);
+        scoreColliderNode.getComponent(cc.BoxCollider).size.height = 2;
+        scoreColliderNode.getComponent(cc.BoxCollider).size.width = this.node.width;
+        this.node.addChild(scoreColliderNode);
+        scoreColliderNode.position = new cc.Vec2(0, -this.node.height / 2);
+        
+    }
+
+    fall () {
+        let notMoveAction = cc.moveBy(3, 0, 0);
+        let moveDownAction = cc.moveBy(4, 0, -this.node.height - this.player.height);
+        this.node.runAction(cc.sequence(notMoveAction, moveDownAction));
+    }
 }

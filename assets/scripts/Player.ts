@@ -27,11 +27,17 @@ export default class NewClass extends cc.Component {
     @property(cc.SpriteFrame)
     jumpSpriteFrame: cc.SpriteFrame = null;
 
+    @property(cc.SpriteFrame)
+    normalSpriteFrame: cc.SpriteFrame = null;
+
 
     startVelocity: cc.Vec2;
     startPos: cc.Vec2;
     boundTime: number;
     isBound: boolean;
+    isCollided: boolean;
+    defaultPositionY: number;
+    oldCNVGrounding = null;
     
     // LIFE-CYCLE CALLBACKS:
 
@@ -47,32 +53,49 @@ export default class NewClass extends cc.Component {
   
 
     start () {
+        this.defaultPositionY = this.node.y;
         this.isBound = false;
+        this.isCollided = false;
         this.startPos = this.node.position;
         this.node.SpriteFrame = this.jumpSpriteFrame;
     }
 
     update (dt) {
+
         //check if game over
-        if (this.canvas.getComponent("GameManager").isGameOver) {
-            this.gameOver();
+        if (this.node.y <= -this.canvas.node.height / 2) {
+            if (this.canvas.getComponent("GameManager").isGameOver == false) {
+                this.canvas.getComponent("GameManager").isGameOver = true;
+                this.gameOver();
+            }
             return;
         }
 
+        if (this.canvas.getComponent("GameManager").isGameOver) {
+            return;
+        }
+
+        if (!this.isBound) {
+            this.node.y -= 2; //gravity
+        }
+
         if (this.isBound) {
+            if (this.isCollided) {
+                //this.node.position.y = this.startPos.y;
+                this.isBound = false;
+                this.isCollided = false;
+                return;
+            }
+
             let x = this.startVelocity.x * this.boundTime;
             let y = this.startVelocity.y * this.boundTime - 0.5 * GRAVITY * this.boundTime * this.boundTime;
     
             this.node.position = this.startPos.add(new cc.Vec2(x, y));
             this.boundTime += dt;
-            if (this.node.position.y + 1 <= this.startPos.y) {
-                this.node.position.y = this.startPos.y;
-                this.isBound = false;
-            }
         }
 
         //player run
-        this.node.x += this.runSpeed * dt;
+        //this.node.x += this.runSpeed * dt;
     }
 
     onTouchStart (touch: cc.Event.EventTouch) {
@@ -113,30 +136,60 @@ export default class NewClass extends cc.Component {
 
         //bound
         this.startVelocity = new cc.Vec2(-1 * (touch.getLocation().x - touch.getStartLocation().x), -2 * (touch.getLocation().y - touch.getStartLocation().y));
-        this.startPos.x = this.node.position.x;
+        if (this.startVelocity.y < 0) {
+            return;
+        }
+        this.startPos = this.node.position;
         this.boundTime = 0;
         this.isBound = true;
 
+        //change jump sprite
+        this.node.getComponent(cc.Sprite).spriteFrame = this.jumpSpriteFrame;
         //play jump animation
-        let anim = this.getComponent(cc.Animation);
+        //let anim = this.getComponent(cc.Animation);
         //anim.play();
         cc.audioEngine.play(this.jumpAudio, false, 1);
     }
 
     onCollisionEnter (other, self) {
         switch (other.tag) {
-            case 1: { //score
-                this.canvas.getComponent("GameManager").gainScore();            
+            case 1: { //cnv
+                this.gameOver();
             } break;
 
-            case 2: { //cnv
-                this.canvas.getComponent("GameManager").gameOver();
+            case 2: { //score
+                if (this.oldCNVGrounding != other) {
+                    if (this.oldCNVGrounding != null) {
+                        this.canvas.getComponent("GameManager").gainScore();
+                    }
+                }
+                
+                if (this.oldCNVGrounding != null) {
+                    this.isCollided = true;    
+                }
+                
+                this.canvas.getComponent("GameManager").spawnCNV(3, undefined);
+                this.oldCNVGrounding = other;
+
+                this.node.getComponent(cc.Sprite).spriteFrame = this.normalSpriteFrame;
+                this.node.y = other.node.parent.y + other.node.parent.height / 2 + this.node.height / 2;
+                other.node.parent.getComponent("CNV").fall();
+                //this.node.y = other.node.y + other.node.height / 2 + this.node.height / 2;            
+
             } break;
         }
-        console.log("TAG: " + other.tag);
     }
 
-    gameOver () {
+    onCollisionStay (other, self) {
+        switch (other.tag) {
+            case 2: {
+                this.node.y = other.node.parent.y + other.node.parent.height / 2 + this.node.height / 2;
+            } break;
+        }
+    }
 
+
+    gameOver () {
+        this.canvas.getComponent("GameManager").gameOver();
     }
 }
