@@ -1,14 +1,14 @@
 {
   "ver": "1.0.0",
-  "uuid": "1a5c047e-a7fd-4acb-bc84-583eb797cec5",
+  "uuid": "04ea9c56-564a-4fa5-a8fc-b92537b24e13",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
   "subMetas": {
-    "playerDown": {
+    "BackGroundXong": {
       "ver": "1.0.3",
-      "uuid": "e96cb329-c15c-492a-b402-afd5e7d3dbb1",
-      "rawTextureUuid": "1a5c047e-a7fd-4acb-bc84-583eb797cec5",
+      "uuid": "91267b95-996f-4b84-946d-0166e77262cc",
+      "rawTextureUuid": "04ea9c56-564a-4fa5-a8fc-b92537b24e13",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
@@ -16,10 +16,10 @@
       "offsetY": 0,
       "trimX": 0,
       "trimY": 0,
-      "width": 183,
-      "height": 241,
-      "rawWidth": 183,
-      "rawHeight": 241,
+      "width": 2208,
+      "height": 1242,
+      "rawWidth": 2208,
+      "rawHeight": 1242,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,

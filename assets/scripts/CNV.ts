@@ -12,8 +12,8 @@ const {ccclass, property} = cc._decorator;
 const CNV_MIN_HEIGHT = 250;
 @ccclass
 export default class NewClass extends cc.Component {
-    @property(cc.Node) Item1: cc.Node=null;
-    @property(cc.Node) Item2: cc.Node=null;
+    //@property(cc.Node) Item1: cc.Node=null;
+    //@property(cc.Node) Item2: cc.Node=null;
 
     player: cc.Node = null;
     canvas: cc.Node = null;
@@ -35,7 +35,7 @@ export default class NewClass extends cc.Component {
     init () {
 
         
-        let cnvHeight = this.canvas.height - this.player.height * 3;
+        //let cnvHeight = this.canvas.height - this.player.height * 3;
         let random = Math.random();
         if (random < 0.3) {
             random = 0.3;
@@ -45,25 +45,27 @@ export default class NewClass extends cc.Component {
             random = 0.7;
         }
 
+        this.node.getComponent(cc.Sprite)
+
         //set item's height
-        this.Item2.height = Math.max(cnvHeight * random, CNV_MIN_HEIGHT);
-        this.Item1.height = cnvHeight - this.Item2.height;
+        //this.Item2.height = Math.max(cnvHeight * random, CNV_MIN_HEIGHT);
+        //this.Item1.height = cnvHeight - this.Item2.height;
 
         //set item's position
-        this.Item1.y = this.canvas.height / 2 - this.Item1.height / 2;
-        this.Item2.y = -this.canvas.height / 2 + this.Item2.height / 2;
+        //this.Item1.y = this.canvas.height / 2 - this.Item1.height / 2;
+        //this.Item2.y = -this.canvas.height / 2 + this.Item2.height / 2;
 
 
         //set score collider position
-        this.node.getComponent(cc.BoxCollider).offset.y = this.Item2.y + this.Item2.height / 2 + this.player.height * 1.5;
+        //this.node.getComponent(cc.BoxCollider).offset.y = this.Item2.y + this.Item2.height / 2 + this.player.height * 1.5;
         //set score collider height
-        this.node.getComponent(cc.BoxCollider).size = cc.size(10, this.player.height * 3);
+        //this.node.getComponent(cc.BoxCollider).size = cc.size(10, this.player.height * 3);
 
         //set item1 cnv size
-        this.Item1.getComponent(cc.BoxCollider).size = this.Item1.getContentSize(); 
+        //this.Item1.getComponent(cc.BoxCollider).size = this.Item1.getContentSize(); 
 
         //set item2 cnv size
-        this.Item2.getComponent(cc.BoxCollider).size = this.Item2.getContentSize();
+        //this.Item2.getComponent(cc.BoxCollider).size = this.Item2.getContentSize();
     }
 
     start () 

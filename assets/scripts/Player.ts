@@ -24,6 +24,10 @@ export default class NewClass extends cc.Component {
     @property({url: cc.AudioClip})
     jumpAudio: cc.AudioClip = null;
 
+    @property(cc.SpriteFrame)
+    jumpSpriteFrame: cc.SpriteFrame = null;
+
+
     startVelocity: cc.Vec2;
     startPos: cc.Vec2;
     boundTime: number;
@@ -45,6 +49,7 @@ export default class NewClass extends cc.Component {
     start () {
         this.isBound = false;
         this.startPos = this.node.position;
+        this.node.SpriteFrame = this.jumpSpriteFrame;
     }
 
     update (dt) {
@@ -114,7 +119,7 @@ export default class NewClass extends cc.Component {
 
         //play jump animation
         let anim = this.getComponent(cc.Animation);
-        anim.play();
+        //anim.play();
         cc.audioEngine.play(this.jumpAudio, false, 1);
     }
 
