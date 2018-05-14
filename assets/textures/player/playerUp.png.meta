@@ -5,7 +5,7 @@
   "wrapMode": "clamp",
   "filterMode": "bilinear",
   "subMetas": {
-    "playerUp": {
+    "PlayerUp": {
       "ver": "1.0.3",
       "uuid": "011b6db9-9437-4576-b881-d53b371f5db5",
       "rawTextureUuid": "eeee966f-4a61-48c0-97bf-fdcbdb6a3a2f",
